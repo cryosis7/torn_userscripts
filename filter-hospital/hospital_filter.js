@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Hospital Filter
 // @namespace    http://cryosis.co/
-// @version      0.1
+// @version      0.2
 // @description  Enables filters to remove/hide people from the hospital.
 // @author       Cryosis
 // @match        *.torn.com/hospitalview.php*
@@ -9,8 +9,6 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // ==/UserScript==
-
-$(() => initialise());
 
 const ACTIVITY = [
     'offline',
@@ -24,8 +22,10 @@ var filters = {
     level: 0,
 };
 
+$(window).load(initialise)
+
 function update() {
-    $($(".users-list").children()).each(filterMember);
+    $(".users-list").children().each(filterMember);
 }
 
 /**
@@ -40,9 +40,10 @@ function filterMember() {
     $(checkboxes).each(function() {
         if ($(this).prop('checked')) {
             if (this.name === 'activity') {
-                if (filters.activity === 'active' && player.activity === 'offline')
-                    show = false;
-                else if (filters.activity !== player.activity)
+                if (filters.activity === 'active') {
+                    if (player.activity === 'offline')
+                        show = false;
+                } else if (filters.activity !== player.activity)
                     show = false;
             } else if (this.name === 'time') {
                 if (compareTime(filters.time, player.time))
@@ -51,9 +52,6 @@ function filterMember() {
                 if (parseInt(filters.level) < parseInt(player.level))
                     show = false;
             }
-
-            if (!show)
-                break;
         }
     });
 
@@ -93,7 +91,7 @@ function drawFilterBar() {
     let element = $(`
       <div class="filter-container m-top10">
         <div class="title-gray top-round">Select Filters</div>
-  
+
         <div class="cont-gray p10 bottom-round">
           <button class="torn-btn right filter-button">Filter</button>
         </div>
@@ -130,7 +128,7 @@ function drawFilterBar() {
                 } else if (this.name === 'level') {
                     let usersLevel = parseInt($(`input[type='text'][name='level']`).val());
                     if (usersLevel !== NaN && usersLevel >= 0)
-                        filters.level = storedFilter.level = usersLevel;
+                        filters.level = storedFilters.level = usersLevel;
                     else
                         $(`input[type='text'][name='${this.name}']`).val('');
                 }
@@ -190,8 +188,8 @@ function setInitialValue() {
 
 /**
  * Compares two time values, which are strings in 'XXh XXm' format and returns true if T1 > T2.
- * @param {The first time to be compared against} time1 
- * @param {The second time to be compared against} time2 
+ * @param {The first time to be compared against} time1
+ * @param {The second time to be compared against} time2
  */
 function compareTime(time1, time2) {
     let t1 = time1.replace(/[m ]/gi, '').split('h');
@@ -208,16 +206,14 @@ function compareTime(time1, time2) {
 
 /**
  * Scrubs the users time input to a correct time value. Returns null if invalid input.
- * @param {The time to be converted} time 
+ * @param {The time to be converted} time
  */
 function convertToTime(time) {
-    console.log(time);
     if (/^(\d{1,2}[hm]? ?){1,2}$/.test(time)) {
         time = time.toLowerCase().replace(/[m ]/gi, '')
         time = time.split('h');
         if (time.length == 1) time.unshift('');
         time = time.map(x => x == '' ? '0' : x);
-        console.log(time)
         return time.join('h ') + 'm';
     }
     return null;
