@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto Select Car
 // @namespace    https://greasyfork.org/en/scripts/398078-auto-select-car
-// @version      1.1.1
+// @version      1.3
 // @description  Keeps a record of which car you want to use for each racetrack and removes every other car from the selection menu.
 // @author       Cryosis7 [926640]
 // @match        https://www.torn.com/loader.php?sid=racing
@@ -16,15 +16,17 @@ const cars = {
     'Ferrari458_TarmacLong3': { 'name': 'Ferrari 458' },
     'LexusLFA_TarmacLong3': { 'name': 'LFA', 'Top Speed': '260' },
     'HondaNSX_TarmacShort3': { 'name': 'NSX', 'Top Speed': '242', 'Brake Dist': '72' },
-    'HondaNSX_DirtShort3': { 'name': 'NSX', 'Top Speed': '240', 'Brake Dist': '72' }
+    'HondaNSX_DirtShort3': { 'name': 'NSX', 'Top Speed': '240', 'Brake Dist': '72' },
+    'ReliantRobin': { 'name': 'Reliant Robin' }
 };
 
 /**
  * Used for mapping the race-track to the car you want to race.
- * TODO: allow for multiple cars on one track.
+ * To have multiple cars show, wrap them in an array like so: (Don't forget the commas)
+ * 'Docks': [cars.LexusLFA_TarmacLong3, cars.ReliantRobin],
  */
 const car_track_mappings = {
-    'Docks': cars.LexusLFA_TarmacLong3,
+    'Docks': [cars.LexusLFA_TarmacLong3, cars.ReliantRobin],
     'Uptown': cars.LexusLFA_TarmacLong3,
     'Withdrawal': cars.LexusLFA_TarmacLong3,
     'Speedway': cars.LexusLFA_TarmacLong3,
@@ -42,6 +44,14 @@ const car_track_mappings = {
     'Hammerhead': cars.HondaNSX_DirtShort3
 };
 
+/**
+ * This can be used to help configure when you want the auto-selector to run.
+ */
+const CONFIG = {
+    'ENABLED_ON_OFFICIAL': true,
+    'ENABLED_ON_CUSTOM': true
+}
+
 // Creates the observer when the page loads.
 $(() => createObserver());
 
@@ -52,7 +62,7 @@ function createObserver() {
     const raceContainer = $('#racingAdditionalContainer')[0];
     var observer = new MutationObserver(function(mutations) {
         for (let mutation of mutations) {
-            if ($(mutation.addedNodes).find('ul.enlist-list') && $('div.enlisted-btn-wrap:contains("Official race")').length)
+            if ($(mutation.addedNodes).find('ul.enlist-list') && checkEnabled())
                 filterCars($(mutation.addedNodes).find('ul.enlist-list').children())
         }
     });
@@ -66,28 +76,32 @@ function createObserver() {
  * @param {The selector for the list of cars.} carList 
  */
 function filterCars(carList) {
-    var racetrack = $('div.enlisted-btn-wrap:contains("Official race")').text().trim().split(' - ')[0];
-    var desiredCar = car_track_mappings[racetrack];
-    console.log(`Racing ${desiredCar['name']} on ${racetrack}`);
+    var racetrack = $('div.enlist-wrap:contains("Current race") div.enlisted-btn-wrap:contains(" - ")').text().trim().split(' - ')[0];
+    var desiredCarArray = Array.isArray(car_track_mappings[racetrack]) ? car_track_mappings[racetrack] : [car_track_mappings[racetrack]];
 
     $(carList).each((index, element) => {
-        let correctCar = true;
+        let carIsPermitted = false; // Whether this car(element on page) matches any cars in the list of permitted cars.        
 
-        for (let stat in desiredCar) {
-            if (stat === 'name')
-                correctCar = scrubText($(element).find('.remove-info')[0].innerText).includes(scrubText(desiredCar.name))
-            else {
-                let carStats = scrubText($(element).find('.enlisted-stat')[0].innerText);
-                if (carStats.includes(scrubText(stat))) {
-                    if (carStats.split(scrubText(stat))[1].startsWith(scrubText(desiredCar[stat])))
-                        continue
-                    else correctCar = false;
+        for (let validCar of desiredCarArray) { // loops through every car that is permitted.
+            let carMatchesValidCar = false; // For testing if the car element matches the permitted car
+
+            for (let stat in validCar) {
+                if (stat === 'name')
+                    carMatchesValidCar = scrubText($(element).find('.remove-info')[0].innerText).includes(scrubText(validCar.name))
+                else {
+                    let carStats = scrubText($(element).find('.enlisted-stat')[0].innerText);
+                    if (carStats.includes(scrubText(stat))) {
+                        if (!carStats.split(scrubText(stat))[1].startsWith(scrubText(validCar[stat])))
+                            carMatchesValidCar = false;
+                    }
                 }
-            }
-            if (!correctCar) break;
-        }
 
-        if (!correctCar) $(element).hide()
+                if (!carMatchesValidCar) break;
+            }
+
+            carIsPermitted = carIsPermitted || carMatchesValidCar;
+        }
+        if (!carIsPermitted) $(element).hide()
     });
 }
 
@@ -97,4 +111,17 @@ function filterCars(carList) {
  */
 function scrubText(text) {
     return text.toLowerCase().replace(/[^a-z0-9]*/g, '');
+}
+
+/**
+ * Helper function that checks the config to see if the script is enabled for the current race
+ */
+function checkEnabled() {
+    if ($('div.enlisted-btn-wrap:contains("Official race")').length && CONFIG.ENABLED_ON_OFFICIAL)
+        return true;
+    else if ($('div.enlisted-btn-wrap:contains(" - "):not(:contains("Official race"))').length &&
+        CONFIG.ENABLED_ON_CUSTOM)
+        return true;
+
+    return false;
 }
