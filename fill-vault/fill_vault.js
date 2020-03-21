@@ -1,13 +1,15 @@
 // ==UserScript==
 // @name         Fill Bank Vault
-// @namespace    http://cryosis.co/
-// @version      0.2
+// @namespace    https://greasyfork.org/en/scripts/386032-fill-bank-vault
+// @version      0.2.1
 // @description  Gives you several monetary values to pre-fill the property vault fields
 // @author       Cryosis
+// @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/fill-vault/fill_vault.js
+// @updateURL    https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/fill-vault/fill_vault.js
 // @match        *.torn.com/properties.php*
 // ==/UserScript==
 
-$(window).load(function () {
+$(window).load(function() {
     let amounts = ['5m', '10m', '30m', '50m']
     setListener();
     waitForVault()
@@ -21,8 +23,7 @@ $(window).load(function () {
     }
 
     function addButtons() {
-        if (!$('.preset-btn').length)
-        {
+        if (!$('.preset-btn').length) {
             let btns = amounts.map(x => `<button class="torn-btn preset-btn" style ="margin-right:10px">$${x}</button>`)
             $('div.title-black:contains(Extra large vault)').before(btns)
 

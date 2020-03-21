@@ -1,9 +1,11 @@
 // ==UserScript==
 // @name         Faction Filter
-// @namespace    https://github.com/cryosis7/torn_userscripts
-// @version      1.3.1
+// @namespace    https://greasyfork.org/en/scripts/375473-faction-filter
+// @version      1.3.2
 // @description  Enables filters to remove/hide people from a faction page.
 // @author       Cryosis7 [926640]
+// @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/filter-faction/Faction_Filter.js
+// @updateURL    https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/filter-faction/Faction_Filter.js
 // @match        https://www.torn.com/factions.php?step=profile&*ID=*
 // @grant        GM_addStyle
 // @grant        GM_setValue

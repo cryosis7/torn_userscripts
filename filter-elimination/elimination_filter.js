@@ -1,9 +1,11 @@
 // ==UserScript==
 // @name         Elmination Filter
-// @namespace    http://cryosis.co/
-// @version      0.3
+// @namespace    https://greasyfork.org/en/scripts/390021-elmination-filter
+// @version      0.3.1
 // @description  Enables filters to remove/hide people from the elimination team pages.
 // @author       cryosis7 [926640]
+// @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/filter-elimination/elimination_filter.js
+// @updateURL    https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/filter-elimination/elimination_filter.js
 // @match        *.torn.com/competition.php*
 // @grant        GM_addStyle
 // @grant        GM_setValue
@@ -11,7 +13,7 @@
 // ==/UserScript==
 
 
-$(window).load(function () {
+$(window).load(function() {
 
     const STATUS = [
         'okay',
@@ -44,7 +46,7 @@ $(window).load(function () {
         let player = this;
         let show = true;
         let checkboxes = $(".filter-container").find("input[type='checkbox']");
-        $(checkboxes).each(function () {
+        $(checkboxes).each(function() {
             if ($(this).prop('checked')) {
                 switch (this.name) {
                     case 'status':
@@ -95,19 +97,19 @@ $(window).load(function () {
         element = addFilterElements(element);
 
         // Adding a checkbox listener to disable/enable the filters.
-        $(element).find('input[type=checkbox]').change(function () {
+        $(element).find('input[type=checkbox]').change(function() {
             $('.filter-button').click();
         });
 
         // Adding a listbox listener to update when changed.
-        $(element).find('select').change(function () {
+        $(element).find('select').change(function() {
             if ($(`input[type=checkbox][name=${this.name}]`).prop('checked'))
                 $('.filter-button').click();
         });
 
         // Adding a listener to the filter button.
-        $(element).find('.filter-button').click(function () {
-            $("input[type='checkbox']").each(function () {
+        $(element).find('.filter-button').click(function() {
+            $("input[type='checkbox']").each(function() {
                 if ($(this).prop('checked')) {
                     let input;
                     switch (this.name) {
@@ -119,8 +121,7 @@ $(window).load(function () {
                             input = parseInt($(`input[type='text'][name='${this.name}']`).val());
                             if (input !== NaN && input >= 0 && input <= 100) {
                                 filters[this.name] = input;
-                            }
-                            else
+                            } else
                                 $(`input[type='text'][name='${this.name}']`).val('');
                             break;
                     }
@@ -152,8 +153,7 @@ $(window).load(function () {
       <span style="padding-right: 15px">
         <select class="listbox" name="status"></select>
         <input type="checkbox" name="status" style="transform:translateY(25%)"/>
-      </span>`
-        );
+      </span>`);
         STATUS.forEach(x => {
             $(statusElement).children(".listbox").append(`<option value=${x}>${x[0].toUpperCase() + x.substr(1)}</option>`);
         });
@@ -210,24 +210,28 @@ $(window).load(function () {
         if (window.location.href.lastIndexOf("team") < 50 && !show)
             return 0;
         else if (show)
-            return !(Math.floor((Math.random()*3)));
+            return !(Math.floor((Math.random() * 3)));
     }
 
     function waitForKeyElements(
-        selectorTxt,    /* Required: The jQuery selector string that
-                            specifies the desired element(s).
-                        */
-        actionFunction, /* Required: The code to run when elements are
-                            found. It is passed a jNode to the matched
-                            element.
-                        */
-        bWaitOnce,      /* Optional: If false, will continue to scan for
-                            new elements even after the first match is
-                            found.
-                        */
-        iframeSelector  /* Optional: If set, identifies the iframe to
-                            search.
-                        */
+        selectorTxt,
+        /* Required: The jQuery selector string that
+                                specifies the desired element(s).
+                            */
+        actionFunction,
+        /* Required: The code to run when elements are
+                                   found. It is passed a jNode to the matched
+                                   element.
+                               */
+        bWaitOnce,
+        /* Optional: If false, will continue to scan for
+                              new elements even after the first match is
+                              found.
+                          */
+        iframeSelector
+        /* Optional: If set, identifies the iframe to
+                                  search.
+                              */
     ) {
         var targetNodes, btargetsFound;
 
@@ -235,14 +239,14 @@ $(window).load(function () {
             targetNodes = $(selectorTxt);
         else
             targetNodes = $(iframeSelector).contents()
-                .find(selectorTxt);
+            .find(selectorTxt);
 
         if (targetNodes && targetNodes.length > 0) {
             btargetsFound = true;
             /*--- Found target node(s).  Go through each and act if they
                 are new.
             */
-            targetNodes.each(function () {
+            targetNodes.each(function() {
                 var jThis = $(this);
                 var alreadyFound = jThis.data('alreadyFound') || false;
 
@@ -255,8 +259,7 @@ $(window).load(function () {
                         jThis.data('alreadyFound', true);
                 }
             });
-        }
-        else {
+        } else {
             btargetsFound = false;
         }
 
@@ -270,17 +273,16 @@ $(window).load(function () {
             //--- The only condition where we need to clear the timer.
             clearInterval(timeControl);
             delete controlObj[controlKey]
-        }
-        else {
+        } else {
             //--- Set a timer, if needed.
             if (!timeControl) {
-                timeControl = setInterval(function () {
-                    waitForKeyElements(selectorTxt,
-                        actionFunction,
-                        bWaitOnce,
-                        iframeSelector
-                    );
-                },
+                timeControl = setInterval(function() {
+                        waitForKeyElements(selectorTxt,
+                            actionFunction,
+                            bWaitOnce,
+                            iframeSelector
+                        );
+                    },
                     300
                 );
                 controlObj[controlKey] = timeControl;

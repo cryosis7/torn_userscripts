@@ -1,9 +1,11 @@
 // ==UserScript==
 // @name         Torn Custom Race Presets
-// @namespace    https://greasyfork.org/en/scripts/393632
-// @version      0.2
+// @namespace    https://greasyfork.org/en/scripts/393632-torn-custom-race-presets
+// @version      0.2.1
 // @description  Make it easier and faster to make custom races - Extended from Xiphias's
 // @author       Cryosis7 [926640]
+// @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/racing-prefills/prefilled_race.js
+// @updateURL    https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/racing-prefills/prefilled_race.js
 // @match        *www.torn.com/loader.php?sid=racing*
 // @grant        none
 // ==/UserScript==

@@ -1,15 +1,16 @@
 // ==UserScript==
 // @name         Clean Travel
-// @namespace    http://cryosis.co/
-// @version      0.3
+// @namespace    https://greasyfork.org/en/scripts/386587-clean-travel
+// @version      0.3.1
 // @description  Cleaner travel screen
 // @author       Cryosis
+// @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/clean-travel/clean_travel.js
+// @updateURL    https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/clean-travel/clean_travel.js
 // @match        *.torn.com/index.php*
 // ==/UserScript==
 
 $(window).load(function() {
-    if ($('h4#skip-to-content:contains(Traveling)').length)
-    {
+    if ($('h4#skip-to-content:contains(Traveling)').length) {
         let forums = $('a:contains(Forums)');
         $(forums).appendTo($('#top-page-links-list'));
         $(forums).addClass('right line-h24');
