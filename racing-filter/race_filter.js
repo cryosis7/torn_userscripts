@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Race Filter
 // @namespace    https://greasyfork.org/en/scripts/389105-race-filter
-// @version      0.2.1
+// @version      0.2.2
 // @description  Filter out long, private or priced races.
 // @author       Cryosis7
 // @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/racing-filter/race_filter.js
@@ -15,7 +15,7 @@
 const RACE_LENGTH = ['all', 'long', 'short'];
 const PASSWORD = ['all', 'protected', 'public'];
 
-$(window).load(function() {
+$(document).ready(function() {
     var filters = GM_getValue('filters', {
         'raceLength': 'all',
         'passwordProtected': 'all',

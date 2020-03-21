@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Overseas Player Filter
 // @namespace    https://greasyfork.org/en/scripts/389742-overseas-player-filter
-// @version      0.2
+// @version      0.2.1
 // @description  Enables filters to remove/hide people from the overseas list.
 // @author       Cryosis7 [926640]
 // @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/filter-overseas/overseas_filter.js
@@ -28,7 +28,7 @@ var filters = {
     status: 'okay',
 };
 
-$(window).load(initialise)
+$(document).ready(initialise)
 
 function update() {
     $(".users-list").children().each(filterMember);

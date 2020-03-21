@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Hospital Filter
 // @namespace    https://greasyfork.org/en/scripts/386757-hospital-filter
-// @version      0.3.1
+// @version      0.3.2
 // @description  Enables filters to remove/hide people from the hospital.
 // @author       Cryosis7 [926640]
 // @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/filter-hospital/hospital_filter.js
@@ -24,7 +24,7 @@ var filters = {
     level: 0,
 };
 
-$(window).load(initialise)
+$(document).ready(initialise)
 
 function update() {
     $(".users-list").children().each(filterMember);
