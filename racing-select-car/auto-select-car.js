@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto Select Car
 // @namespace    https://greasyfork.org/en/scripts/398078-auto-select-car
-// @version      1.2
+// @version      1.3
 // @description  Keeps a record of which car you want to use for each racetrack and removes every other car from the selection menu.
 // @author       Cryosis7 [926640]
 // @match        https://www.torn.com/loader.php?sid=racing
@@ -44,6 +44,14 @@ const car_track_mappings = {
     'Hammerhead': cars.HondaNSX_DirtShort3
 };
 
+/**
+ * This can be used to help configure when you want the auto-selector to run.
+ */
+const CONFIG = {
+    'ENABLED_ON_OFFICIAL': true,
+    'ENABLED_ON_CUSTOM': true
+}
+
 // Creates the observer when the page loads.
 $(() => createObserver());
 
@@ -54,7 +62,7 @@ function createObserver() {
     const raceContainer = $('#racingAdditionalContainer')[0];
     var observer = new MutationObserver(function(mutations) {
         for (let mutation of mutations) {
-            if ($(mutation.addedNodes).find('ul.enlist-list') && $('div.enlisted-btn-wrap:contains("Official race")').length)
+            if ($(mutation.addedNodes).find('ul.enlist-list') && checkEnabled())
                 filterCars($(mutation.addedNodes).find('ul.enlist-list').children())
         }
     });
@@ -68,7 +76,7 @@ function createObserver() {
  * @param {The selector for the list of cars.} carList 
  */
 function filterCars(carList) {
-    var racetrack = $('div.enlisted-btn-wrap:contains("Official race")').text().trim().split(' - ')[0];
+    var racetrack = $('div.enlist-wrap:contains("Current race") div.enlisted-btn-wrap:contains(" - ")').text().trim().split(' - ')[0];
     var desiredCarArray = Array.isArray(car_track_mappings[racetrack]) ? car_track_mappings[racetrack] : [car_track_mappings[racetrack]];
 
     $(carList).each((index, element) => {
@@ -103,4 +111,17 @@ function filterCars(carList) {
  */
 function scrubText(text) {
     return text.toLowerCase().replace(/[^a-z0-9]*/g, '');
+}
+
+/**
+ * Helper function that checks the config to see if the script is enabled for the current race
+ */
+function checkEnabled() {
+    if ($('div.enlisted-btn-wrap:contains("Official race")').length && CONFIG.ENABLED_ON_OFFICIAL)
+        return true;
+    else if ($('div.enlisted-btn-wrap:contains(" - "):not(:contains("Official race"))').length &&
+        CONFIG.ENABLED_ON_CUSTOM)
+        return true;
+
+    return false;
 }
