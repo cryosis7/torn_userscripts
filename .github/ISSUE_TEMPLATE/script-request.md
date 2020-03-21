@@ -2,7 +2,7 @@
 name: Script request
 about: Suggest a script idea
 title: "[SCRIPT] - "
-labels: ''
+labels: 'script request'
 assignees: cryosis7
 
 ---
