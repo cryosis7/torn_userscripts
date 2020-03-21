@@ -1,7 +1,9 @@
 # Cryosis7's Torn Userscripts Collection
 This is a compilation of all my userscripts that I maintain.
 If you would like to download any, the links are listed below - which are hosted on greasyfork for easy install.
-Alternatively you can copy the text from files here on GitHub and add the script yourself.
+Alternatively you can copy the text from files here on GitHub and add the script yourself.  
+You can also browse them on my GreasyFork page: [https://greasyfork.org/en/users/231500-cryosis7](https://greasyfork.org/en/users/231500-cryosis7).  
+Developers: If you wish to make changes, feel free to fork the repo and create a pull request.
 
 
 ## Userscripts:
