@@ -1,133 +1,102 @@
 // ==UserScript==
 // @name         Faction Filter
-// @namespace    http://cryosis.co/
-// @version      1.2
+// @namespace    https://github.com/cryosis7/torn_userscripts
+// @version      1.3.1
 // @description  Enables filters to remove/hide people from a faction page.
-// @author       Cryosis7 [926640] (With fixes from Helcostr [1934501])
+// @author       Cryosis7 [926640]
 // @match        https://www.torn.com/factions.php?step=profile&*ID=*
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
 // ==/UserScript==
 
+const ACTIVITY = [
+    'offline',
+    'idle',
+    'online',
+    'active'
+];
+const STATUS = [
+    'okay',
+    'hospital',
+    'traveling',
+    'jail',
+];
+var filters = {
+    activity: 'offline',
+    level: 0,
+    days: 0,
+    status: 'okay',
+};
 
-$(window).load(function() {
+$(window).load(initialise)
 
-    const ACTIVITY = [
-        'offline',
-        'idle',
-        'online',
-        'active'
-    ];
-    const STATUS = [
-        'okay',
-        'hospital',
-        'traveling',
-        'jail',
-    ];
-    var filters = {
-        activity: 'offline',
-        level: 0,
-        days: 0,
-        status: 'okay',
-    };
+function update() {
+    $(".member-list").children().each(filterMember);
+}
 
-    initialise();
+/**
+ * Hides the current element(a player) based on the supplied filters
+ */
+function filterMember() {
+    let player = createPlayer(this);
 
-    function update() {
-        let playerList = $(".member-list").children();
-        $(playerList).each(filterMember);
-    }
-
-    /**
-     * Hides the child(the current player) based on the supplied filters
-     * @param {The index of a child element from the parent class defined with '.member-list'} index
-     */
-    function filterMember(index) {
-        let player = createPlayer(this);
-
-        // Checking the filters
-        let show = true;
-        let checkboxes = $(".filter-container").find("input[type='checkbox']");
-        $(checkboxes).each(function(index) {
-            if ($(this).prop('checked')) {
-                switch (this.name) {
-                    case 'activity':
-                        if (filters['activity'] === 'active') // 'active' == Online or Idle
-                        {
-                            if (player['activity'] === 'offline')
-                                show = false;
-                        } else if (filters['activity'] !== player['activity'])
-                            show = false;
-                        break;
-                    case 'status':
-                        if (filters['status'] !== player['status'])
-                            show = false;
-                        break;
-                    case 'level':
-                    case 'days':
-                        if (parseInt(filters[this.name]) < parseInt(player[this.name]))
-                            show = false;
-                        break;
-                }
+    // Checking the filters
+    let show = true;
+    let checkboxes = $(".filter-container").find("input[type='checkbox']");
+    $(checkboxes).each(function() {
+        if ($(this).prop('checked')) {
+            if (this.name === 'activity') {
+                if (filters.activity === 'active') {
+                    if (player.activity === 'offline')
+                        show = false;
+                } else if (filters.activity !== player.activity)
+                    show = false;
+            } else if (this.name === 'status') {
+                if (filters.status !== player.status)
+                    show = false;
+            } else if (this.name === 'level' || this.name === 'days') {
+                if (parseInt(filters[this.name]) < parseInt(player[this.name]))
+                    show = false;
             }
-        });
-
-        if (show)
-            $(this).show();
-        else
-            $(this).hide();
-    }
-
-    /**
-     * Returns an object with the stats as values (keys are the same as 'filters').
-     * @param {the raw data about the player, found under '.player-info'} rawData
-     */
-    function createPlayer(rawData) {
-        let player = {};
-
-        let playerActivityIconID = $(rawData).find("#iconTray").children().attr('id');
-        let playerActivity;
-        switch (/icon\d+/.exec(playerActivityIconID)[0]) {
-            case 'icon1':
-                playerActivity = 'online';
-                break;
-            case 'icon2':
-                playerActivity = 'offline';
-                break;
-            case 'icon62':
-                playerActivity = 'idle';
-                break;
-            default:
-                playerActivity = 'help im broken UwU';
         }
-        player.activity = playerActivity;
+    });
 
-        let level = $(rawData).find(".lvl").text().replace(/\D/g, '');
-        player.level = parseInt(level);
+    if (show)
+        $(this).show();
+    else
+        $(this).hide();
+}
 
-        let days = $(rawData).find(".days").text().replace(/\D/g, '');
-        player.days = parseInt(days);
-
-        player.status = $(rawData).find(".status").children().last().text().toLowerCase();
-        return player;
+/**
+ * Returns an object with the stats as values (keys are the same as 'filters').
+ * @param {the element containing the player, found under '.player-info'} playerElement
+ */
+function createPlayer(playerElement) {
+    return {
+        activity: $(playerElement).find("#iconTray li.iconShow").prop("title").replace(/(<\/?b>)/g, "").toLowerCase(),
+        level: parseInt($(playerElement).find(".lvl").text().match(/\d+/g)[0]),
+        days: parseInt($(playerElement).find(".days").text().match(/\d+/g)[0]),
+        status: $(playerElement).find(".status").children().last().text().toLowerCase()
     }
+}
 
-    /**
-     * Initiation function to be run at the beginning.
-     */
-    function initialise() {
-        addStyles();
-        drawFilterBar();
-        setInitialValue();
-        $(".filter-button").click();
-    }
+/**
+ * Initiation function that creates the filter bar and adds it to the dom.
+ */
+function initialise() {
+    addStyles();
+    drawFilterBar();
+    setInitialValue();
+    $(".filter-button").click();
+}
 
-    function drawFilterBar() {
-        let playerContainer = $(".faction-info-wrap").last();
-
-        // Creating the filter bar and adding it to the dom.
-        let element = $(`
+/**
+ * Creates and draws the filter bar onto the dom
+ */
+function drawFilterBar() {
+    // Creating the filter bar and adding it to the dom.
+    let element = $(`
   <div class="filter-container m-top10">
     <div class="title-gray top-round">Select Filters</div>
 
@@ -136,69 +105,62 @@ $(window).load(function() {
     </div>
   </div>`);
 
-        element = addFilterElements(element);
-        $(playerContainer).before(element); // <- Adding to the dom.
+    element = addFilterElements(element);
+    $(".faction-info-wrap").last().before(element); // <- Adding to the dom.
 
-        // Adding a checkbox listener to disable/enable the filters.
-        $('input[type=checkbox]').change(function() {
+    // Adding a checkbox listener to disable/enable the filters.
+    $('input[type=checkbox]').change(function() {
+        $('.filter-button').click();
+    });
+
+    // Adding a listbox listener to update when changed.
+    $(element).find('select').change(function() {
+        if ($(`input[type=checkbox][name=${this.name}]`).prop('checked'))
             $('.filter-button').click();
-        });
+    });
 
-        // Adding a listbox listener to update when changed.
-        $(element).find('select').change(function() {
-            if ($(`input[type=checkbox][name=${this.name}]`).prop('checked'))
-                $('.filter-button').click();
-        });
-
-        // Adding a listener to the filter button.
-        $('.filter-button').click(function() {
-            let storedFilters = {}
-            $("input[type='checkbox']").each(function(index) {
-                if ($(this).prop('checked')) {
-                    switch (this.name) {
-                        case 'activity':
-                        case 'status':
-                            filters[this.name] = $(`select[name='${this.name}']`).val();
-                            storedFilters[this.name] = $(`select[name='${this.name}']`).val();
-                            break;
-                        case 'level':
-                        case 'days':
-                            let input = parseInt($(`input[type='text'][name='${this.name}']`).val());
-                            if (input !== NaN && input >= 0) {
-                                filters[this.name] = input;
-                                storedFilters[this.name] = input;
-                            } else
-                                $(`input[type='text'][name='${this.name}']`).val('');
-                            break;
-                    }
+    // Adding a listener to the filter button.
+    $('.filter-button').click(function() {
+        let storedFilters = {}
+        $("input[type='checkbox']").each(function() {
+            if ($(this).prop('checked')) {
+                if (this.name === 'activity' || this.name === 'status')
+                    filters[this.name] = storedFilters[this.name] = $(`select[name='${this.name}']`).val();
+                else if (this.name === 'level' || this.name === 'days') {
+                    let input = parseInt($(`input[type='text'][name='${this.name}']`).val());
+                    if (input !== NaN && input >= 0)
+                        filters[this.name] = storedFilters[this.name] = input;
+                    else
+                        $(`input[type='text'][name='${this.name}']`).val('');
                 }
-            });
-
-            GM_setValue('storedFilters', storedFilters)
-            update();
+            }
         });
-    }
 
-    /**
-     * Appends the html filter options for each of the current filters.
-     * @param {The filter box to add the elements to} element
-     */
-    function addFilterElements(element) {
-        // Activity Listbox
-        let activityElement = $(`
+        GM_setValue('storedFilters', storedFilters)
+        update();
+    });
+}
+
+/**
+ * Appends the html filter options for each of the filters.
+ * @param {The filter box to add the elements to} element
+ */
+function addFilterElements(element) {
+    // Activity Listbox
+    let activityElement = $(`
   <span style="padding-right: 15px">
     <select class="listbox" name="activity"></select>
     <input type="checkbox" name="activity" style="transform:translateY(25%)"/>
   </span>`);
-        ACTIVITY.forEach(x => {
-            $(activityElement).children(".listbox").append(`<option value=${x}>${x[0].toUpperCase() + x.substr(1)}</option>`);
-        });
-        $(element).children(".cont-gray").append(activityElement);
+    ACTIVITY.forEach(x => {
+        $(activityElement).children(".listbox").append(`<option value=${x}>${x[0].toUpperCase() + x.substr(1)}</option>`);
+    });
+    $(element).children(".cont-gray").append(activityElement);
 
-        // Days + Level Textboxes
-        for (let i = 1; i < 3; i++) {
-            let filter = Object.keys(filters)[i];
-            let filterElement = $(`
+    // Days + Level Textboxes
+    for (let i = 1; i < 3; i++) {
+        let filter = Object.keys(filters)[i];
+        let filterElement = $(`
       <span style="padding-right: 15px">
         <label>${filter[0].toUpperCase() + filter.substr(1)}:
         <input type="text" name="${filter}" class="textbox" value="${filters[filter]}"/>
@@ -206,37 +168,39 @@ $(window).load(function() {
         </label>
       </span>
       `);
-            $(element).children(".cont-gray").append(filterElement);
-        }
+        $(element).children(".cont-gray").append(filterElement);
+    }
 
-        // Status Listboxes
-        let statusElement = $(`
+    // Status Listboxes
+    let statusElement = $(`
   <span style="padding-right: 15px">
     <select class="listbox" name="status"></select>
     <input type="checkbox" name="status" style="transform:translateY(25%)"/>
   </span>`);
-        STATUS.forEach(x => {
-            $(statusElement).children(".listbox").append(`<option value=${x}>${x[0].toUpperCase() + x.substr(1)}</option>`);
-        });
-        $(element).children(".cont-gray").append(statusElement);
+    STATUS.forEach(x => {
+        $(statusElement).children(".listbox").append(`<option value=${x}>${x[0].toUpperCase() + x.substr(1)}</option>`);
+    });
+    $(element).children(".cont-gray").append(statusElement);
 
-        return element
+    return element
+}
+
+/**
+ * Retrieves the initial values last used out of the cache and sets them
+ */
+function setInitialValue() {
+    let storedFilters = GM_getValue('storedFilters', {});
+    let filterContainer = $(".filter-container")
+
+    for (let filter in storedFilters) {
+        let domFilter = $(filterContainer).find(`[name="${filter}"]`);
+        domFilter.eq(0).val(storedFilters[filter]);
+        domFilter.eq(1).prop('checked', true);
     }
+}
 
-    // Retrieves the initial values last used out of the cache and sets them
-    function setInitialValue() {
-        let storedFilters = GM_getValue('storedFilters', {});
-        let filterContainer = $(".filter-container")
-
-        for (let filter in storedFilters) {
-            let domFilter = $(filterContainer).find(`[name="${filter}"]`);
-            domFilter.eq(0).val(storedFilters[filter]);
-            domFilter.eq(1).prop('checked', true);
-        }
-    }
-
-    function addStyles() {
-        GM_addStyle(`
+function addStyles() {
+    GM_addStyle(`
   .textbox {
     padding: 5px;
     border: 1px solid #ccc;
@@ -251,5 +215,4 @@ $(window).load(function() {
     text-align: left;
   }
   `);
-    }
-})
+}

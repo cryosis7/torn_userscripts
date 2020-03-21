@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Hospital Filter
-// @namespace    http://cryosis.co/
-// @version      0.2
+// @namespace    https://github.com/cryosis7/torn_userscripts
+// @version      0.3
 // @description  Enables filters to remove/hide people from the hospital.
-// @author       Cryosis
+// @author       Cryosis7 [926640]
 // @match        *.torn.com/hospitalview.php*
 // @grant        GM_addStyle
 // @grant        GM_setValue
@@ -63,12 +63,12 @@ function filterMember() {
 
 /**
  * Returns an object with the stats as values (keys are the same as 'filters').
- * @param {the raw data about the player, found under '.player-info'} rawData
+ * @param {the element containing the player, found under '.player-info'} playerElement
  */
 function createPlayer(playerElement) {
     return {
         activity: $(playerElement).find("#iconTray li.iconShow").prop("title").replace(/(<\/?b>)/g, "").toLowerCase(),
-        level: parseInt($(playerElement).find("span.level").text().match(/\d+/g, '')[0]),
+        level: parseInt($(playerElement).find("span.level").text().match(/\d+/g)[0]),
         time: $(playerElement).find("span.time").text().match(/(\d{1,2}h )?(\d{1,2}m)/g)[0] //TODO: Convert to minutes
     }
 }
@@ -141,7 +141,7 @@ function drawFilterBar() {
 }
 
 /**
- * Adds the html filters into the html wrapper passed in as argument.
+ * Appends the html filter options for each of the filters.
  * @param {The filter box to add the elements to} element
  */
 function addFilterElements(element) {
@@ -224,7 +224,7 @@ function addStyles() {
       .textbox {
         padding: 5px;
         border: 1px solid #ccc;
-        width: 50px;
+        width: 40px;
         text-align: left;
         height: 16px;
       }
