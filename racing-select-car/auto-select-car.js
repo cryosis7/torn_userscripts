@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto Select Car
 // @namespace    https://greasyfork.org/en/scripts/398078-auto-select-car
-// @version      1.3.2
+// @version      1.4
 // @description  Keeps a record of which car you want to use for each racetrack and removes every other car from the selection menu.
 // @author       Cryosis7 [926640]
 // @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/racing-select-car/auto-select-car.js
