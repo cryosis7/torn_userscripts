@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fill Bank Vault
 // @namespace    https://greasyfork.org/en/scripts/386032-fill-bank-vault
-// @version      0.2.1
+// @version      0.2.2
 // @description  Gives you several monetary values to pre-fill the property vault fields
 // @author       Cryosis
 // @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/fill-vault/fill_vault.js
@@ -10,7 +10,7 @@
 // ==/UserScript==
 
 $(window).load(function() {
-    let amounts = ['5m', '10m', '30m', '50m']
+    let amounts = ['1m', '5m', '10m', '30m', '50m']
     setListener();
     waitForVault()
 
