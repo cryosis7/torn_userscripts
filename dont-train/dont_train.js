@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Don't Train
 // @namespace    https://greasyfork.org/en/scripts/383075-don-t-train
-// @version      0.1.2
+// @version      0.1.3
 // @description  Disables the gym to prevent you from training while stacking.
 // @author       Cryosis
 // @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/dont-train/dont_train.js
@@ -23,7 +23,7 @@ $(window).load(function () {
             : "YOU SON OF A BITCH, <span style='color: red; font-weight:bold'>DON'T</span> YOU FUCKING <u>DARE</u> SPEND THAT ENERGY!"
         }
         </p><br/>
-        ${(TERRY_CRUZ) ?
+        ${TERRY_CRUZ ?
             "</br><center><img src=https://i.imgur.com/CFPkW8Z.jpg width=80%/></center>" : ""
         }
         <br/>
