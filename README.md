@@ -42,3 +42,9 @@ When creating a race, this script lets you set up some templates such as a 100 l
 ### Racing - Select Correct Car
 For people in Racing Class A with multiple cars. Set up your cars in the settings, and which race tracks you want to use them on - then when you go to change your car in a race, it will only show the cars that you have said you want to be used for that race track.  
 [https://greasyfork.org/en/scripts/398078-auto-select-car](https://greasyfork.org/en/scripts/398078-auto-select-car)
+
+&nbsp;
+
+
+##### Other, Less Popular Scripts / Made On Request:
+* [Don't Hunt while in SA](https://greasyfork.org/en/scripts/402084-don-t-hunt) (Blocks hunting screen)
