@@ -3,7 +3,7 @@
 // @namespace    https://greasyfork.org/en/scripts/375338-hall-of-fame-filter
 // @version      0.3.1
 // @description  Allows filters for the Hall Of Fame
-// @author       Cryosis
+// @author       cryosis7 [926640]
 // @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/filter-hof/hof_filter.js
 // @updateURL    https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/filter-hof/hof_filter.js
 // @match        *.torn.com/halloffame.php*

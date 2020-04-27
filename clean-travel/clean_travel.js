@@ -3,7 +3,7 @@
 // @namespace    https://greasyfork.org/en/scripts/386587-clean-travel
 // @version      0.3.1
 // @description  Cleaner travel screen
-// @author       Cryosis
+// @author       cryosis7 [926640]
 // @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/clean-travel/clean_travel.js
 // @updateURL    https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/clean-travel/clean_travel.js
 // @match        *.torn.com/index.php*
