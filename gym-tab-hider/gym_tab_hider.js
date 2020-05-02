@@ -1,87 +1,97 @@
 // ==UserScript==
 // @name         Gym Tab Hider
 // @namespace    https://greasyfork.org/users/191331
-// @version      1.5
+// @version      2.0
 // @description  Hide unwanted gym stats
-// @author       FATU [1482556]
-// @include      *://*torn.com/gym.php*
-// @require      https://code.jquery.com/jquery-3.3.1.min.js
+// @author       FATU [1482556] | Re-designed by cryosis7 [926640]
+// @match        https://www.torn.com/gym.php
+// @grant        GM_setValue
+// @grant        GM_getValue
 // ==/UserScript==
 
-$(window).on("load", function() {
-    var checkboxes = [];
+'use strict'
 
-    var resetStyle = {
-        "-webkit-appearance" : "none",
-        "-moz-appearance" : "none",
-        "appearance" : "none",
-        "border" : "0",
-        "cursor" : "pointer",
-        "display" : "block",
-        "margin-top" : "10px",
-        "margin-left" : "auto",
-        "padding" : "5px 10px",
-        "background" : "linear-gradient(rgb(215, 215, 215) 0px,rgb(127, 127, 127) 80%, rgb(127, 127, 127) 90%, rgb(138, 138, 138))",
-        "color" : "#333",
-        "font-family" : "inherit",
-        "font-size" : "14px",
-        "font-weight" : "700",
-        "text-transform" : "uppercase",
-        "text-shadow" : "rgba(255, 255, 255, 0.4) 0px 1px 0px",
-        "border-radius" : "5px"
-    };
 
-    $("#gymroot").find(".page-head-delimiter").first().after("<button id='reset'>Reset Tabs</button>");
+window.onload = function () {
+    insertCheckboxes();
+    addCheckboxListeners();
+    initialiseStoredSettings();
+};
 
-    $("#reset").css(resetStyle);
-
-    // Run through all tabs, append radio buttons to them & push selectors to array
-    $("#gymroot").find("ul").find("li").each(function() {
-        var tab = $(this);
-        var tabType = tab.find("h3").text();
-
-        // Render checkboxes for each tab
-        tab.find("[class^=description]").append("<div class='disable'><input type='checkbox' " + "id='"+ tabType +"' name='" + tabType + "' /><label for='" + tabType + "'> Disable this tab?</label></div>");
-
-        var disableStyle = {
-            "margin-top" : "10px",
-            "font-weight" : "bold"
-        };
-
-        $(".disable").css(disableStyle);
-
-        // Push tab name & checkbox selector to array
-        checkboxes.push({[tabType] : $("#" + tabType)});
+/**
+ * Adds checkboxes into each gym stat
+ */
+function insertCheckboxes() {
+    let statBoxes = document.querySelectorAll('div[class^="gymContent"] li');
+    statBoxes.forEach(stat => {
+        let statName = stat.className.split('_')[0];
+        let checkbox = elementCreator('input', { type: 'checkbox', id: statName, name: statName, style: 'margin-right: 5px; vertical-align: middle' });
+        let label = elementCreator('label', { for: statName, style: 'vertical-align: middle' }, '<b>Disable this stat?</b>');
+        let checkboxWrapper = elementCreator('div', { style: 'margin: 5px' });
+        checkboxWrapper.appendChild(checkbox);
+        checkboxWrapper.appendChild(label);
+        stat.querySelector('[class^="description"]').append(checkboxWrapper);
     });
+}
 
-    // Disable the tab when button is checked
-    $.each(checkboxes, function() {
-        var tabName = Object.keys(this)[0];
-        var tabCheckbox = Object.values(this)[0];
-        var tabDisable = {"pointer-events" : "none", "opacity" : ".5"};
-
-        tabCheckbox.on("change", function() {
-
-            // Pointer events will likely cover this, but why not?
-            if (tabCheckbox.prop("checked")) {
-                localStorage.setItem(tabName, true);
-                tabCheckbox.closest("li").css(tabDisable);
+/**
+ * Goes through each checkbox, adding a listener to each one which will disable the gym stat when clicked.
+ */
+function addCheckboxListeners() {
+    document.querySelectorAll('div[class^="gymContent"] input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            let trainBox = document.querySelector(`li[zstat="${checkbox.name}"] div[class^="inputWrapper"]`).parentElement;
+            if (checkbox.checked) {
+                trainBox.style['pointer-events'] = 'none';
+                trainBox.style.opacity = '0.5';
             }
-        });
+            else {
+                trainBox.style['pointer-events'] = 'auto';
+                trainBox.style.opacity = '1';
+            }
 
-        // Check if tab has been disabled
-        var checked = localStorage.getItem(tabName);
-
-        // If it's already been checked, disable tab
-        if (checked) {
-            tabCheckbox.prop("checked", true).closest("li").css(tabDisable);
-        }
-
-        // When reset button is pressed, remove all mentions of tabs from localStorage
-        // and then reload page
-        $("#reset").on("click", function() {
-            localStorage.removeItem(tabName);
-            location.reload();
+            updateStoredSettings();
         });
     });
-});
+}
+
+/**
+ * Stores the checkbox settings in local memory.
+ */
+function updateStoredSettings() {
+    let settings = {}
+    document.querySelectorAll('div[class^="gymContent"] input[type="checkbox"]').forEach(checkbox => settings[checkbox.name] = checkbox.checked);
+
+    GM_setValue('gymTabHiderSettings', settings);
+}
+
+/**
+ * Retrieves the stored settings and initialises the checkboxes.
+ */
+function initialiseStoredSettings() {
+    let storedSettings = GM_getValue('gymTabHiderSettings', {});
+    for (let stat in storedSettings)
+        if (storedSettings[stat]) {
+            document.querySelector(`input[type="checkbox"][id=${stat}]`).checked = true;
+            
+            let trainBox = document.querySelector(`li[class^="${stat}"] div[class^="inputWrapper"]`).parentElement;
+            trainBox.style['pointer-events'] = 'none';
+            trainBox.style.opacity = '0.5';
+        }
+}
+
+
+/**
+ * Creates an HTML element according to the given parameters
+ * 
+ * @param {String} type The HTML type to create ('div')
+ * @param {Object} attributes Attributes to set {'class': 'wrapper'}
+ * @param {String} html 'Inner text/html to set'
+ */
+function elementCreator(type = 'div', attributes, html) {
+    let el = document.createElement(type);
+    for (let attribute in attributes)
+        el.setAttribute(attribute, attributes[attribute])
+    if (html) el.innerHTML = html;
+    return el
+}
