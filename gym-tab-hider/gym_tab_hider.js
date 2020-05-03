@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gym Tab Hider
 // @namespace    https://greasyfork.org/users/191331
-// @version      2.0
+// @version      2.1
 // @description  Hide unwanted gym stats
 // @author       FATU [1482556] | Re-designed by cryosis7 [926640]
 // @match        https://www.torn.com/gym.php
@@ -11,12 +11,16 @@
 
 'use strict'
 
+window.onload = run;
 
-window.onload = function () {
+async function run() {
+    while (!document.querySelectorAll('div[class^="gymContent"] li').length)
+        await new this.Promise(resolve => this.setTimeout(r, 50))
+
     insertCheckboxes();
     addCheckboxListeners();
     initialiseStoredSettings();
-};
+}
 
 /**
  * Adds checkboxes into each gym stat
