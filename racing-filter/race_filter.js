@@ -3,7 +3,7 @@
 // @namespace    https://greasyfork.org/en/scripts/389105-race-filter
 // @version      0.2.2
 // @description  Filter out long, private or priced races.
-// @author       Cryosis7
+// @author       cryosis7 [926640]
 // @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/racing-filter/race_filter.js
 // @updateURL    https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/racing-filter/race_filter.js
 // @match        https://www.torn.com/loader.php?sid=racing

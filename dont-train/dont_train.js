@@ -3,7 +3,7 @@
 // @namespace    https://greasyfork.org/en/scripts/383075-don-t-train
 // @version      0.2
 // @description  Disables the gym to prevent you from training while stacking.
-// @author       Cryosis
+// @author       cryosis7 [926640]
 // @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/dont-train/dont_train.js
 // @updateURL    https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/dont-train/dont_train.js
 // @match        *.torn.com/gym.php*
@@ -12,7 +12,7 @@
 const EXPLICIT_MODE = true;
 const TERRY_CRUZ = true;
 
-$(window).load(function () {
+$(window).load(function() {
     $('#gymroot').replaceWith(`
     <div class='m-top10'>
         <div class='title-black top-round' aria-level='5'>STOP</div>
