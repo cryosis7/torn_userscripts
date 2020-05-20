@@ -1,11 +1,9 @@
 // ==UserScript==
 // @name         Auto Select Car
 // @namespace    https://greasyfork.org/en/scripts/398078-auto-select-car
-// @version      1.4
+// @version      1.4.1
 // @description  Keeps a record of which car you want to use for each racetrack and removes every other car from the selection menu.
 // @author       Cryosis7 [926640]
-// @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/racing-select-car/auto-select-car.js
-// @updateURL    https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/racing-select-car/auto-select-car.js
 // @match        https://www.torn.com/loader.php?sid=racing
 // ==/UserScript==
 
@@ -15,11 +13,13 @@
  * The qualifiers like 'top speed' are used to differeniate between different versions of the same model car (Dirt NSX vs Tarmac NSX)
  */
 const cars = {
-    'Ferrari458_TarmacLong3': { 'name': 'Ferrari 458' },
-    'LexusLFA_TarmacLong3': { 'name': 'LFA', 'Top Speed': '260' },
-    'HondaNSX_TarmacShort3': { 'name': 'NSX', 'Top Speed': '242', 'Brake Dist': '72' },
-    'HondaNSX_DirtShort3': { 'name': 'NSX', 'Top Speed': '240', 'Brake Dist': '72' },
-    'ReliantRobin': { 'name': 'Reliant Robin' }
+    Ferrari458_TarmacLong3: { 'name': 'Ferrari 458' },
+    LexusLFA_TarmacLong3: { 'name': 'LFA', 'Top Speed': '260' },
+    HondaNSX_TarmacShort3: { 'name': 'NSX', 'Top Speed': '242' },
+    HondaNSX_DirtShort3: { 'name': 'NSX', 'Top Speed': '240' },
+    HondaNSX_DirtShort2: { 'name': 'NSX', 'Top Speed': '237' },
+    ReliantRobin: { 'name': 'Reliant Robin' },
+    SierraCosworth: { 'name': 'Sierra' }
 };
 
 /**
@@ -36,10 +36,10 @@ const car_track_mappings = {
     'Meltdown': cars.HondaNSX_TarmacShort3,
     'Industrial': cars.HondaNSX_TarmacShort3,
     'Vector': cars.HondaNSX_TarmacShort3,
-    'Underdog': cars.HondaNSX_TarmacShort3,
-    'Commerce': cars.HondaNSX_TarmacShort3,
-    'Sewage': cars.HondaNSX_TarmacShort3,
-    'Mudpit': cars.HondaNSX_DirtShort3,
+    'Underdog': cars.HondaNSX_TarmacShort2,
+    'Commerce': cars.HondaNSX_TarmacShort2,
+    'Sewage': cars.HondaNSX_TarmacShort2,
+    'Mudpit': cars.SierraCosworth,
     'Two Islands': cars.HondaNSX_DirtShort3,
     'Stone Park': cars.HondaNSX_DirtShort3,
     'Parkland': cars.HondaNSX_DirtShort3,
@@ -62,7 +62,7 @@ $(() => createObserver());
  */
 function createObserver() {
     const raceContainer = $('#racingAdditionalContainer')[0];
-    var observer = new MutationObserver(function(mutations) {
+    var observer = new MutationObserver(function (mutations) {
         for (let mutation of mutations) {
             if ($(mutation.addedNodes).find('ul.enlist-list') && checkEnabled())
                 filterCars($(mutation.addedNodes).find('ul.enlist-list').children())
