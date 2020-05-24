@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto Select Car
 // @namespace    https://greasyfork.org/en/scripts/398078-auto-select-car
-// @version      1.4.1
+// @version      1.5
 // @description  Keeps a record of which car you want to use for each racetrack and removes every other car from the selection menu.
 // @updateURL    https://raw.githubusercontent.com/cryosis7/torn_userscripts/personal/racing-select-car/auto-select-car.js
 // @author       Cryosis7 [926640]
@@ -18,7 +18,7 @@ const cars = {
     LexusLFA_TarmacLong3: { 'name': 'LFA', 'Top Speed': '260' },
     HondaNSX_TarmacShort3: { 'name': 'NSX', 'Top Speed': '242' },
     HondaNSX_DirtShort3: { 'name': 'NSX', 'Top Speed': '240' },
-    HondaNSX_DirtShort2: { 'name': 'NSX', 'Top Speed': '237' },
+    HondaNSX_TarmacShort2: {'name': 'NSX', 'Top Speed': '239'},
     ReliantRobin: { 'name': 'Reliant Robin' },
     SierraCosworth: { 'name': 'Sierra' }
 };
