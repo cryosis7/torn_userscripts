@@ -2,7 +2,7 @@
 // @name         Faction Filter
 // @namespace    https://greasyfork.org/en/scripts/375473-faction-filter
 // @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/filter-faction/Faction_Filter.user.js
-// @version      1.4
+// @version      1.4.1
 // @description  Enables filters to remove/hide people from a faction page.
 // @author       Cryosis7 [926640]
 // @match        https://www.torn.com/factions.php?step=profile&*ID=*
@@ -60,16 +60,18 @@ function update() {
         document.querySelectorAll('.filter-container input[type="checkbox"]').forEach(checkbox => {
             if (checkbox.checked) {
                 if (checkbox.name === 'activity') {
-                    if (filters.activity === 'active' && player.activity === 'offline') {
+                    if (filters.activity === 'active') {
+                        if (player.activity === 'offline')
+                            show = false;
+                    }
+                    else if (filters.activity !== player.activity)
                         show = false;
-                    } else if (filters.activity !== player.activity)
-                    show = false;
                 } else if (checkbox.name === 'status') {
                     if (filters.status !== player.status)
-                    show = false;
+                        show = false;
                 } else if (checkbox.name === 'level' || checkbox.name === 'days') {
                     if (filters[checkbox.name] < parseInt(player[checkbox.name]))
-                    show = false;
+                        show = false;
                 } else if (checkbox.name === 'position') {
                     if (filters.position !== player.position)
                         show = false;

@@ -2,7 +2,7 @@
 // @name         Faction Filter
 // @namespace    https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/filter-faction/Faction_Filter.user.js
 // @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/filter-faction/Faction_Filter.user.js
-// @version      1.4
+// @version      1.4.1
 // @description  Enables filters to remove/hide people from a faction page.
 // @author       Cryosis7 [926640]
 // @match        https://www.torn.com/factions.php?step=profile&*ID=*
