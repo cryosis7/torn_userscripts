@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Faction Filter
 // @namespace    https://greasyfork.org/en/scripts/375473-faction-filter
-// @version      1.3.3
+// @version      1.4
 // @description  Enables filters to remove/hide people from a faction page.
 // @author       Cryosis7 [926640]
 // @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/filter-faction/Faction_Filter.js
@@ -33,8 +33,18 @@ var filters = {
 
 $(document).ready(initialise)
 
+/**
+ * Initiation function that creates the filter bar and adds it to the dom.
+ */
+function initialise() {
+    addStyles();
+    drawFilterBar();
+    setInitialValue();
+    $(".filter-button").click();
+}
+
 function update() {
-    $(".member-list").children().each(filterMember);
+    $('#faction-info-members ul.table-body').children().each(filterMember);
 }
 
 /**
@@ -81,16 +91,6 @@ function createPlayer(playerElement) {
         days: parseInt($(playerElement).find(".days").text().match(/\d+/g)[0]),
         status: $(playerElement).find(".status").children().last().text().toLowerCase()
     }
-}
-
-/**
- * Initiation function that creates the filter bar and adds it to the dom.
- */
-function initialise() {
-    addStyles();
-    drawFilterBar();
-    setInitialValue();
-    $(".filter-button").click();
 }
 
 /**
@@ -145,7 +145,7 @@ function drawFilterBar() {
 
 /**
  * Appends the html filter options for each of the filters.
- * @param {The filter box to add the elements to} element
+ * @param {element} element The element to append the filters to.
  */
 function addFilterElements(element) {
     // Activity Listbox
