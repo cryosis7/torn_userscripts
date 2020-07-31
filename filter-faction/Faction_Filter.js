@@ -26,7 +26,6 @@ const STATUS = [
 var filters = {
     activity: 'offline',
     level: 0,
-    days: 0,
     status: 'okay',
     position: undefined,
 };
@@ -51,7 +50,6 @@ function update() {
         let player = {
             activity: playerElement.querySelector('.member li.iconShow').title.replace(/<\/?b>/g, "").toLowerCase(),
             level: playerElement.querySelector('.lvl').textContent.replace(/\D/g, ''),
-            days: playerElement.querySelector(".days").textContent.replace(/\D/g, ''),
             status: playerElement.querySelector(".status span").textContent.toLowerCase(),
             position: playerElement.querySelector('.ellipsis').textContent,
         }
@@ -69,8 +67,8 @@ function update() {
                 } else if (checkbox.name === 'status') {
                     if (filters.status !== player.status)
                         show = false;
-                } else if (checkbox.name === 'level' || checkbox.name === 'days') {
-                    if (filters[checkbox.name] < parseInt(player[checkbox.name]))
+                } else if (checkbox.name === 'level') {
+                    if (filters.level < parseInt(player[checkbox.name]))
                         show = false;
                 } else if (checkbox.name === 'position') {
                     if (filters.position !== player.position)
@@ -121,12 +119,12 @@ function drawFilterBar() {
             if (checkbox.checked) {
                 if (checkbox.name === 'activity' || checkbox.name === 'status' || checkbox.name === 'position')
                     filters[checkbox.name] = storedFilters[checkbox.name] = document.querySelector(`select[name='${checkbox.name}']`).value;
-                else if (checkbox.name === 'level' || checkbox.name === 'days') {
-                    let input = parseInt(document.querySelector(`input[type='text'][name='${checkbox.name}']`).value);
+                else if (checkbox.name === 'level') {
+                    let input = parseInt(document.querySelector(`input[type='text'][name='level']`).value);
                     if (input !== NaN && input >= 0)
-                        filters[checkbox.name] = storedFilters[checkbox.name] = input;
+                        filters.level = storedFilters.level = input;
                     else
-                        document.querySelector(`input[type='text'][name='${checkbox.name}']`).value = '0';
+                        document.querySelector(`input[type='text'][name='level']`).value = '0';
                 }
             }
         });
@@ -153,18 +151,14 @@ function addFilterElements(element) {
     $(element).children(".cont-gray").append(activityElement);
 
     // Days + Level Textboxes
-    for (let i = 1; i < 3; i++) {
-        let filter = Object.keys(filters)[i];
-        let filterElement = $(`
+    let filterElement = $(`
       <span style="padding-right: 15px">
-        <label>${filter[0].toUpperCase() + filter.substr(1)}:
-        <input type="text" name="${filter}" class="textbox" value="${filters[filter]}"/>
-        <input type="checkbox" name="${filter}" style="transform:translateY(25%)"/>
-        </label>
+        <label>Level:</label>
+        <input type="text" name="level" class="textbox" value="0"/>
+        <input type="checkbox" name="level" style="transform:translateY(25%)"/>
       </span>
       `);
-        $(element).children(".cont-gray").append(filterElement);
-    }
+    $(element).children(".cont-gray").append(filterElement);
 
     // Status Listbox
     let statusElement = $(`
