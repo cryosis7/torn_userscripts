@@ -18,9 +18,10 @@ const cars = {
     LexusLFA_TarmacLong3: { 'name': 'LFA', 'Top Speed': '260' },
     HondaNSX_TarmacShort3: { 'name': 'NSX', 'Top Speed': '242' },
     HondaNSX_DirtShort3: { 'name': 'NSX', 'Top Speed': '240' },
-    HondaNSX_TarmacShort2: {'name': 'NSX', 'Top Speed': '239'},
+    HondaNSX_TarmacShort2: { 'name': 'NSX', 'Top Speed': '239' },
     ReliantRobin: { 'name': 'Reliant Robin' },
-    SierraCosworth: { 'name': 'Sierra' }
+    SierraCosworth: { 'name': 'Sierra' },
+    AudiR8: { 'name': 'Audi R8' }
 };
 
 /**
@@ -42,7 +43,7 @@ const car_track_mappings = {
     'Sewage': cars.HondaNSX_TarmacShort2,
     'Mudpit': cars.SierraCosworth,
     'Two Islands': cars.HondaNSX_DirtShort3,
-    'Stone Park': cars.HondaNSX_DirtShort3,
+    'Stone Park': cars.AudiR8,
     'Parkland': cars.HondaNSX_DirtShort3,
     'Hammerhead': cars.HondaNSX_DirtShort3
 };
