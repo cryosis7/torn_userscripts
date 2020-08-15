@@ -6,7 +6,7 @@
 // @author       Cryosis7 [926640]
 // @downloadURL  https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/max-buy/max_buy.js
 // @updateURL    https://raw.githubusercontent.com/cryosis7/torn_userscripts/master/max-buy/max_buy.js
-// @match        *www.torn.com/shops.php?*
+// @match        *www.torn.com/shops.php*
 // @match        *www.torn.com/bazaar.php*
 // ==/UserScript==
 
