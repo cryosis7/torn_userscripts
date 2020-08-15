@@ -1,20 +1,16 @@
 // ==UserScript==
 // @name         Massive Chain Timer
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Creates a massive chain timer that helps with chain watching.
 // @author       Cryosis7 [926640]
 // @match        https://www.torn.com/*
 // @grant        none
 // ==/UserScript==
 
-const INCLUDE_CHAIN_COUNT = true;
+const INCLUDE_CHAIN_COUNT = false;
 
-window.onload = (async function () {
-    console.log("Printing", $('a#barChain').children())
-    while (!$('a#barChain').children())
-        await sleep(50);
-
+window.onload = function () {
     if (INCLUDE_CHAIN_COUNT) {
         $('#barChain :not([class^="bar-value"], [class^="bar-timeleft"], [class^="bar-stats"])').remove();
         $('#barChain :first-child').css({ 'display': 'block' });
@@ -43,9 +39,4 @@ window.onload = (async function () {
             'padding': ' 10px',
         })
     }
-});
-
-const sleep = (milliseconds) => {
-    console.log('running')
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-}
+};
